@@ -10,6 +10,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory:
+          - 'crud'
+          - 'db'
+          - 'nginx'  # Assuming the Dockerfile for the nginx directory is named 'Dockerfile'
+
     steps:
       -
         name: Checkout
@@ -30,14 +37,14 @@ jobs:
         name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: ky0328  
+          username: ky0328
           password: etoilekayla02
       -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./${{ matrix.directory }}  # Use the specific directory
+          file: ./${{ matrix.directory }}/Dockerfile  # Specify Dockerfile in the directory
           platforms: linux/amd64
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
