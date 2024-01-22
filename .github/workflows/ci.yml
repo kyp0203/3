@@ -15,7 +15,7 @@ jobs:
         directory:
           - 'crud'
           - 'db'
-          - 'nginx'  # Assuming the Dockerfile for the nginx directory is named 'Dockerfile'
+          - 'nginx'
 
     steps:
       -
@@ -43,9 +43,11 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./${{ matrix.directory }}  # Use the specific directory
-          file: ./${{ matrix.directory }}/Dockerfile  # Specify Dockerfile in the directory
+          context: ./${{ matrix.directory }}
+          file: ./${{ matrix.directory }}/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+        env:
+          DOCKER_BUILDKIT: 1  # Enable BuildKit
